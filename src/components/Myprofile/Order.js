@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Headers from '../Headers';
 import { Container, Row, Col, Image, Button, Form, InputGroup, Modal, FloatingLabel, Card } from 'react-bootstrap'
 import { getOrderdata } from '../../config/Myservice';
 import MyAccount from './MyAccount';
@@ -66,7 +65,7 @@ export default function Order() {
                                         <p key={index} >
                                             <Card style={{ width: "500px", height: "250px" }} className="mt-1 p-2 mb-1" >
                                                 <h5><span className='text-success'>Order No:</span> {value.Orderno}</h5>
-                                                <p><span className='text-danger'>DATE</span>:{value.date}</p>
+                                                <p><span className='text-danger'>DATE&nbsp;</span>:&nbsp;<b>{value.date.substring(0,10)}</b></p>
                                                 <div className='row'>
 
                                                     {temp[index].items.map((val) => {
@@ -85,7 +84,7 @@ export default function Order() {
                                                 <div className="mt-1">
 
                                                     <button className='btn btn-danger' onClick={() => singleitem(value._id)}>INVOICE PDF</button>
-                                                    {/* <button className='btn btn-primary mt-2'> <a href="/invoicepdf" target="_blank">INVOICE PDF</a> </button> */}
+
                                                 </div>
                                             </Card>
                                         </p>

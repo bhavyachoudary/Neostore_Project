@@ -38,7 +38,7 @@ function ForgotPassword() {
         sendMailotp(data)
             .then((res, err) => {
                 console.log(res.data)
-                setOtp(res.data.msg)
+                setOtp(res.data.otpcod)
                 if (res.data.err) {
                     alert(res.data.err)
                 } else {
@@ -56,7 +56,7 @@ function ForgotPassword() {
                     alert(res.data.msg)
                 } else {
                     alert(res.data.msg)
-                    navigate("/")
+                    navigate("/login")
                 }
             })
     }

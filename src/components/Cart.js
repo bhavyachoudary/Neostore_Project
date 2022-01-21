@@ -81,8 +81,7 @@ export default function Cart() {
         
             <Container fluid className="text-dark mt-4 mb-5 ">
                 <Row>
-
-                    <Col lg={8} >
+                    <Col lg={8}>
                         {cart.length !== 0 ?
                             <Card className="p-3">
                                 <h2>My Orders</h2>

@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Container, Row, Col, Image, Button, Form, InputGroup, Modal, FloatingLabel, Card } from 'react-bootstrap'
-
 import { MdOutlineCompareArrows, MdModeEdit, MdDelete } from 'react-icons/md'
 import { BiCheckbox } from 'react-icons/bi';
 import MyAccount from './MyAccount';
 import { getProfile, addAddress, deleteAddr, editAddress, cardaddress } from '../../config/Myservice'
-import Headers from '../Headers'
 import { useLocation } from "react-router";
 
 
@@ -26,8 +24,8 @@ export default function Address() {
     const [status, setStatus] = useState(false)
     const [getAddress, setGetAddress] = useState([])
     const [email, setEmail] = useState('');
-   const [selectAddr,setSelectAddr]=useState('');
-     const { state } = useLocation();
+    const [selectAddr,setSelectAddr]=useState('');
+    const { state } = useLocation();
 
 
     useEffect(() => {

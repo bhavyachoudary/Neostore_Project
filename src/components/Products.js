@@ -222,7 +222,6 @@ export default function Products() {
 
     return (
         <>
-         
             <Container fluid className="bg-light d-flex justify-content-center"  >
                 <Container className="pt-5">
 

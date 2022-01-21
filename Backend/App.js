@@ -2,7 +2,6 @@ const express=require('express');
 const cors = require('cors');
 const port =8899;
 const app=express()
-const passport = require("passport");
 const path=require('path')
 
 app.use(express.json());
@@ -27,7 +26,6 @@ app.use('/api/neostore',router4)
 
 const router5=require('./routes/orderRoutes')
 app.use('/api/neostore',router5)
-
 
 
 app.listen(port,(err)=>{

@@ -19,6 +19,8 @@ export default function Invoicepdf() {
                 console.log(res.data);
                 console.log(res.data.pdf);
                 console.log(res.data.pdf);
+                console.log(res.data.pdf.Orderno);
+                
                 setDatas(res.data.pdf)
 
             });
@@ -26,30 +28,8 @@ export default function Invoicepdf() {
 
 
     console.log(datas)
-    //console.log(datas.items)
-    const sendmail = () => {
-        const input = document.getElementById("divToPrint");
-        console.log(input);
-        html2canvas(input, { useCORS: true }).then((canvas) => {
-            const pdf = new jsPDF();
-            const img = canvas.toDataURL(
-                "/images/2.jpg"
-            );
-            pdf.addImage(img, "JPEG", 0, 0);
-            const filedata = pdf.output("blob");
-            console.log(filedata);
-            let formData = new FormData();
-            formData.append("file", filedata, "samplefile");
-            console.log("calling");
-
-            sendMail(formData).then((res) => {
-                console.log(res);
-                console.log("in response");
-            });
-            console.log("call finished");
-        });
-    };
-
+    console.log(datas.Orderno)
+   
     const generatePdf = () => {
         const input = document.getElementById("divToPrint");
         console.log(input);
@@ -65,41 +45,47 @@ export default function Invoicepdf() {
     return (
         <div>
 
-            <Container>
+            <Container fluid className="w-100 d-flex justify-content-center ">
                 <div className="text-center mt-3">
 
                     <Button variant="success" onClick={() => generatePdf()}>
                         Click To PDF
                     </Button>
                     &nbsp;
-                    <Button variant="primary" onClick={() => sendmail()}>
-                        Send To Email
-                    </Button>
+                   
                 </div>
             </Container>
             <br />
             <Container
                 style={{
-                    border: "1px solid black",
-                    width: "700px",
+                    // border: "1px solid black",
+                    width: "60%",
                 }}
+                className="bg-light"
                 ref={ref}
                 id="divToPrint"
             >
-                <div style={{ backgroundColor: "lightpink" }}>
+                <div style={{ backgroundColor: "violet" }}>
                     <Row>
-                        <Col md={9}>
+                        <Col md={9} style={{ backgroundColor: "violet" }}>  
 
                             <Image
                                 src="/images/neo.jpg"
                                 width="100px"
                                 height="100px"
+                                className="p-2"
                             />
 
                         </Col>
-                        <Col md={3}>
-                            <h2>Neostore</h2>
-                            <h6>{}</h6>
+                        <Col md={3} style={{ backgroundColor: "violet" }}> 
+                        <h2 style={{ color: 'white' }}>Neo<span style={{ color: 'red' }}>STORE</span></h2>
+                        {datas.map((value) => {
+                            return (
+                                  <span>OrderNo<h4><i> {value.Orderno}</i></h4></span>
+                                               
+                        )
+                        }
+                        )}
 
                         </Col>
                     </Row>

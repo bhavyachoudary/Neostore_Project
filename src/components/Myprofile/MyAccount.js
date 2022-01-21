@@ -5,11 +5,10 @@ import { HiOutlineMenuAlt2 } from 'react-icons/hi'
 import { BsArrowLeftRight } from 'react-icons/bs'
 import { MdAccountBox, MdLibraryBooks } from 'react-icons/md';
 import { MAIN_URL} from  '../../config/Url';
-
 import { getProfile, } from '../../config/Myservice';
 import axios from 'axios';
 import '../../App.css';
-import Headers from '../Headers';
+
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
 
@@ -31,7 +30,7 @@ export default function MyAccount() {
                 
             })
     }, [])
-   
+   console.log(user.imagePath)
 
 
     const onFormSubmit = (e) => {

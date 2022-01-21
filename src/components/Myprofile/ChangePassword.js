@@ -2,7 +2,6 @@ import React,{useState,useEffect,useRef} from 'react';
 import { Container, Row, Col,Form,Button,Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import {getProfile,changePass} from '../../config/Myservice';
-import Headers from '../Headers';
 import MyAccount from './MyAccount';
 
 export default function ChangePassword() {
@@ -52,7 +51,7 @@ export default function ChangePassword() {
             }
             else{
                 alert(res.data.msg);
-                navigate('/profile')
+                navigate('/login')
                
             }
         })

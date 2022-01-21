@@ -30,7 +30,7 @@ export default function Registration() {
                 }
                 else {
                     alert(res.data.msg)
-                    navigate('/')
+                    navigate('/login')
                 }
             });
 

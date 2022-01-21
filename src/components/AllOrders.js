@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-
 import { Container, Row, Col, Table } from 'react-bootstrap'
 import { getOrderdata } from '../config/Myservice'
-import Headers from './Headers';
+
 
 
 export default function AllOrders() {
@@ -38,7 +37,7 @@ export default function AllOrders() {
                             {temp.map((value, index) => {
                                 return (
                                     <p key={index} >
-                                        <p><span className='text-danger'>DATE</span>:{value.date}</p>
+                                        <p><span className='text-danger'>DATE&nbsp;</span>:<b>&nbsp;{value.date.substring(0,10)}</b></p>
                                         <div>
                                             <Table striped bordered hover size="sm">
                                                 <thead>
