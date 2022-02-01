@@ -2,22 +2,28 @@ const productModel = require('../models/productSchema')
 
 
 const productCtrl = {
-    getProducts: (req, res) => {
-        productModel.find().populate(["category_id", "color_id"])
-            .then(product => {
-                //console.log(product);
-                res.status(200).json({ products: product })
-            })
+    getProducts: (req, res) =>{
+        productModel.find().populate(["category_id","color_id"]).exec((err, data)=> {
+            if(err){
+                res.json({err:'somthing went wrong'}).status(400)
+            }
+            else{
+                res.status(200).json({ products:data})  
+            }
+        })
+      
     },
-
+    
     singleproduct: (req, res) => {
         let id = req.params.id
         productModel.findOne({ _id: id })
-            .populate("color_id")
-            .then(product => {
-                console.log(product);
-                res.status(200).json({ product: product, image: product.subimages })
-
+            .populate("color_id").exec((err, data)=> {
+                if(err){
+                    res.json({err:'somthing went wrong'}).status(400)
+                }
+                else{
+                    res.status(200).json({ product: data, image: data.subimages})  
+                }
             })
     },
 
@@ -38,6 +44,7 @@ const productCtrl = {
 
         })
     }
+  
 }
 
 
