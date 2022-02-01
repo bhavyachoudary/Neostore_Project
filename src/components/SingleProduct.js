@@ -14,24 +14,29 @@ import {
   TwitterIcon,
 } from "react-share";
 import "react-multiple-select-dropdown-lite/dist/index.css";
-import ReactStars from "react-rating-stars-component";
-import Headers from "./Headers";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 function SingleProduct() {
   let email = sessionStorage.getItem('user')
-  const [rating,setrating]=useState('')
+  const [rating, setrating] = useState('')
   const [ratings, setRatings] = useState(0)
   const [postdata, setPostdata] = useState([]);
   const [images, setimages] = useState([]);
   const [mainimage, setmainimage] = useState();
-  const [code,setCode]=useState('');
-  const [colname,setColname]=useState('')
+  const [code, setCode] = useState('');
+  const [colname, setColname] = useState('')
   // let location = useLocation();
   const { state } = useLocation();
   const [states, setStates] = useState('')
 
+  const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+  const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+  const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
+
   const handleRating = (rate) => {
-    let newrating =((((rate/20)+rating)/2).toFixed(1))
+    let newrating = ((((rate / 20) + rating) / 2).toFixed(1))
     let data = { newrating: newrating }
 
     //setRatings(rate)
@@ -68,7 +73,7 @@ function SingleProduct() {
         setColname(res.data.product.color_id.color_name)
         console.log(res.data.product.color_id.color_code)
         console.log(res.data.product.color_id.color_name)
-       
+
       });
   }, []);
   console.log(postdata);
@@ -82,13 +87,13 @@ function SingleProduct() {
         let ind = arr.findIndex(x => x.id === id);
         arr[ind] = { id: id, quantity: arr[ind].quantity + 1, item: item, email: email };
         localStorage.setItem('mycart', JSON.stringify(arr));
-        alert("Product quantity is increased");
+        warning("Product quantity is increased");
       }
       else {
         arr.push({ id: id, quantity: 1, item: item, email: email });
         localStorage.setItem('mycart', JSON.stringify(arr));
-        counter()
-        alert("Product added to cart hii")
+        // counter()
+        success("Product added to cart")
         //window.location.reload()
       }
 
@@ -97,22 +102,22 @@ function SingleProduct() {
       let arr = [];
       arr.push({ id: id, quantity: 1, item: item, email: email });
       localStorage.setItem('mycart', JSON.stringify(arr));
-      counter()
-      alert("Product added to cart")
+      // counter()
+      success("Product added to cart")
       //window.location.reload()
 
     }
   }
-  const counter = () => {
-    let arr = JSON.parse(localStorage.getItem('mycart'));
-    setStates(arr.length)
-    localStorage.setItem('my', JSON.stringify(states))
-    console.log(states)
-    //console.log()
-  }
+  // const counter = () => {
+  //   let arr = JSON.parse(localStorage.getItem('mycart'));
+  //   setStates(arr.length)
+  //   localStorage.setItem('my', JSON.stringify(states))
+  //   console.log(states)
+  //   //console.log()
+  // }
   return (
     <>
-    
+
       <div>
         <div className="container pt-4">
 
@@ -126,6 +131,7 @@ function SingleProduct() {
                         alt: "Wristwatch by Ted Baker London",
                         isFluidWidth: true,
                         src: mainimage,
+                        height:1000
                       },
                       largeImage: {
                         src: mainimage,
@@ -158,7 +164,7 @@ function SingleProduct() {
 
                     </h5>
                     <h5>
-                    <p>Color :&nbsp;<span className="dynamiccol">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span className="text-dark">&nbsp;<b>{colname}</b></span></p>
+                      <p>Color :&nbsp;<span className="dynamiccol">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span className="text-dark">&nbsp;<b>{colname}</b></span></p>
 
                     </h5>
 

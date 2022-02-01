@@ -1,13 +1,30 @@
 import React, { useState } from 'react'
 import { Row, Col, Button } from 'react-bootstrap'
-
-
+import { useNavigate } from 'react-router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
+const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 function Footer() {
     const [value, setValue] = useState('');
+    const navigate = useNavigate();
+    
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     //For Storing Entered Email by Users
-    const onChange = (event) => {
-        sessionStorage.setItem("subscriber", event.target.value);
-        setValue(event.target.value)
+    sessionStorage.setItem("subscriber", value);
+
+    const subscribe = () => {
+        console.log(value)
+        if (value === '' && !regForEmail.test(value)) {
+            failure("Please enter valid email to subscribe")
+
+        }
+        else {
+            navigate('/thankyou')
+        }
+
     }
     return (
         <div>
@@ -34,9 +51,12 @@ function Footer() {
                     <Col style={{ color: 'white' }}>
                         <ul className='list-unstyled'><h4>News Letter</h4>
                             <li>Signup to get exclusive offer from our favourite brands and to be sale up in the news</li><br />
-                            <li><input type="text" placeholder='Your Email...' value={value} onChange={onChange}></input></li>
-                            <br />
-                            <li><Button href='thankyou' className='btn btn-light'>Subscribe</Button></li>
+                            <form>
+                                <li><input type="text" placeholder='Your Email...' name="value" onChange={(event) => { setValue(event.target.value) }} required ></input> </li>
+                                {value != '' && !regForEmail.test(value) && <span className="text-light">Enter email correctly</span>}
+                                <br />
+                                <li><Button className='btn btn-light' onClick={() => subscribe()}>Subscribe</Button></li>
+                            </form>
                         </ul>
                     </Col>
                 </Row>

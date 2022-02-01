@@ -41,16 +41,16 @@ function Headers() {
                             <Nav.Link href="/allorders" className="text-white">Order</Nav.Link>
                         </Container>
 
-                        <Form className="d-flex ml-auto">
+                        {/* <Form className="d-flex ml-auto">
                             <FormControl
                                 type="search"
                                 placeholder="Search"
 
                                 aria-label="Search"
                             />
-                        </Form>&nbsp;
+                        </Form>&nbsp; */}
 
-                        l <Button variant="light" ><a className="text-dark d-flex" href="/cart" >
+                        l <Button variant="light" ><a  style={{ textDecoration: 'none'}} className="text-dark d-flex"  href="/cart" >
                             <BsCartFill style={{ fontSize: "20px" }} />&nbsp;<i>{length}</i></a>
                         </Button>&nbsp;
 
@@ -61,7 +61,8 @@ function Headers() {
 
                                 <Dropdown.Item href="/register">Register</Dropdown.Item>
 
-                            </> : <>
+                            </> : 
+                            <>
 
                                 <Dropdown.Item href="/profile">My Profile</Dropdown.Item>
 

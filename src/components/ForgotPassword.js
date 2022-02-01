@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Container, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 //import { getOtp } from '../config/Myservice';
-
 import { forgotPassword, getOtp, sendMailotp } from '../config/Myservice'
-import Headers from './Headers';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
+
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 function ForgotPassword() {
     const [errors, setError] = useState({ err_vcode: '', err_npass: '', err_cpass: '', err_email: '' })
@@ -15,6 +17,10 @@ function ForgotPassword() {
     let [otpcode, setOtpcode] = useState('');
     const navigate = useNavigate();
     const vcode = useRef('');
+    
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
 
     console.log(otp)
     const handler = (event) => {
@@ -40,9 +46,9 @@ function ForgotPassword() {
                 console.log(res.data)
                 setOtp(res.data.otpcod)
                 if (res.data.err) {
-                    alert(res.data.err)
+                    failure(res.data.err)
                 } else {
-                    alert(res.data.msg)
+                    success(res.data.msg)
 
                 }
             })
@@ -53,9 +59,9 @@ function ForgotPassword() {
         forgotPassword(data)
             .then((res) => {
                 if (res.data.err) {
-                    alert(res.data.msg)
+                    failure(res.data.msg)
                 } else {
-                    alert(res.data.msg)
+                    success(res.data.msg)
                     navigate("/login")
                 }
             })
@@ -68,11 +74,11 @@ function ForgotPassword() {
         console.log(otp)
 
         if (vcode.current.value == otp) {
-            alert("OTP MAtched")
+            success("OTP MAtched")
 
         }
         else {
-            alert("OTP NOT MATCH !! TRY AGAIN")
+            failure("OTP NOT MATCH !! TRY AGAIN")
         }
 
 

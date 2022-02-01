@@ -16,7 +16,7 @@ export default function Order() {
                     let data1 = res.data.user;
                     settemp(data1);
                     console.log(data1)
-                    
+
                 }
                 else {
                     console.log(res.data.err)
@@ -29,14 +29,14 @@ export default function Order() {
 
     const singleitem = (id) => {
         console.log(id)
-        
+
         navigate('/invoicepdf', { state: { id: id } })
-       
+
     }
 
     return (
         <>
-         
+
             <Container className="pt-3 pb-3">
                 <h3>My Account</h3>
                 <hr />
@@ -65,7 +65,7 @@ export default function Order() {
                                         <p key={index} >
                                             <Card style={{ width: "500px", height: "250px" }} className="mt-1 p-2 mb-1" >
                                                 <h5><span className='text-success'>Order No:</span> {value.Orderno}</h5>
-                                                <p><span className='text-danger'>DATE&nbsp;</span>:&nbsp;<b>{value.date.substring(0,10)}</b></p>
+                                                <p><span className='text-danger'>DATE&nbsp;</span>:&nbsp;<b>{value.date.substring(0, 10)}</b></p>
                                                 <div className='row'>
 
                                                     {temp[index].items.map((val) => {

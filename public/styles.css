@@ -44,5 +44,8 @@
     border-color: darkgray;
     border-width: 10px;
   }
+  .brd{
+    border:2px black solid;
+  }
   
     

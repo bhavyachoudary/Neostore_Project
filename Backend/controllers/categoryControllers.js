@@ -8,7 +8,6 @@ const categoryCtrl = {
         // console.log(id)
         const products = productModel.find({ 'category_id': id })
             .populate(["category_id", "color_id"])
-
         products.then(response => {
             res.json({ products: response })
         })
@@ -16,7 +15,6 @@ const categoryCtrl = {
 
     getColorProducts: (req, res) => {
         let id = req.params.id
-
         const products = productModel.find({ 'color_id': id })
             .populate(["category_id", "color_id"])
         products.then(response => {
@@ -25,7 +23,6 @@ const categoryCtrl = {
 
     },
     getAllCategories: (req, res) => {
-
         let category = categoryModel.find({}).exec();
         category.then(response => {
             res.json({ category: response })

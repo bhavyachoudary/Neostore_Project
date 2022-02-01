@@ -1,4 +1,4 @@
 module.exports = credentials={
-    email:'bhavyamullapudi3@gmail.com',
-    password:'Bhavya@03'
+    email:'bhavyachoudary3@gmail.com',
+    password:'Bhavya@94'
 }

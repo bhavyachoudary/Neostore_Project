@@ -5,9 +5,12 @@ import { BiCheckbox } from 'react-icons/bi';
 import MyAccount from './MyAccount';
 import { getProfile, addAddress, deleteAddr, editAddress, cardaddress } from '../../config/Myservice'
 import { useLocation } from "react-router";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 export default function Address() {
+
     const [errors, setError] = useState({
         err_oldpass: '', err_npass: '', err_cpass: '', err_fname: '', err_lname: '', err_mobile: '',
         err_address: '', err_pincode: '', err_city: '', err_states: '', err_country: ''
@@ -24,12 +27,15 @@ export default function Address() {
     const [status, setStatus] = useState(false)
     const [getAddress, setGetAddress] = useState([])
     const [email, setEmail] = useState('');
-    const [selectAddr,setSelectAddr]=useState('');
+    const [selectAddr, setSelectAddr] = useState('');
     const { state } = useLocation();
-
+    const [hide, setHide] = useState(false);
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
 
     useEffect(() => {
-         getProfile(sessionStorage.getItem('user'))
+        getProfile(sessionStorage.getItem('user'))
             .then(res => {
                 if (res.data.user) {
                     console.log(res.data.user);
@@ -39,7 +45,7 @@ export default function Address() {
                     setEmail(data.email);
                     setGetAddress(res.data.address)
                     console.log(res.data.address)
-               
+
                     console.log(user)
                     // console.log(user.Address)
                 }
@@ -55,6 +61,13 @@ export default function Address() {
         addAddress(data)
             .then((res) => {
                 console.log(res.data)
+                if (res.data.err) {
+                    failure(res.data.err)
+                }
+                else {
+                    success(res.data.msg)
+                    setStatus(true)
+                }
             })
         setShow(false)
         // window.location.reload();
@@ -85,12 +98,17 @@ export default function Address() {
         editAddress(data)
             .then((res) => {
                 console.log(res.data)
+                if (res.data.err) {
+                    failure(res.data.err)
+                }
+                else {
+                    success(res.data.msg)
+                    setStatus(true)
+                }
             })
 
         setShowadd(false)
-        window.location.reload();
-
-
+        //window.location.reload();
     }
 
     const deleteAdd = (e, addr) => {
@@ -100,14 +118,14 @@ export default function Address() {
         deleteAddr(email, addr)
             .then((res) => {
                 console.log(res.data)
-                if(res.data.err){
-                    alert(res.data.err)
+                if (res.data.err) {
+                    failure(res.data.err)
                 }
-                else{
-                    alert(res.data.msg)
+                else {
+                    warning(res.data.msg)
                     setStatus(true)
                 }
-               
+
             })
         setStatus(false)
 
@@ -116,13 +134,15 @@ export default function Address() {
 
     const selectadd = (e, addr) => {
         e.preventDefault();
-       let useraddress = { email: sessionStorage.getItem('user'), selectaddr: addr, orderno:state.orderno }
+        let useraddress = { email: sessionStorage.getItem('user'), selectaddr: addr, orderno: state.orderno }
         cardaddress(useraddress)
             .then((res) => {
                 console.log(res.data)
-                alert("Address added ")
+                success("Address added successfully ")
+                setHide(true)
+
                 localStorage.removeItem("mycart");
-               });
+            });
 
     }
     const handleClose = () => setShow(false);
@@ -130,7 +150,7 @@ export default function Address() {
 
     return (
         <>
-         
+
             <Container fluid>
                 <Container >
                     <h3>My Account</h3>
@@ -140,6 +160,7 @@ export default function Address() {
                             <MyAccount />
                         </Col>
                         <Col lg={7} md={12} sm={12} >
+
                             <Card style={{ width: "550px" }} className="pl-4 mb-2">
                                 <section >
 
@@ -158,18 +179,10 @@ export default function Address() {
                                 <section >
                                     {getAddress.map((addr) =>
                                         <Row >
-                                           
-                                          
-                                               <div>
-                                               <a  onClick={(e) => { selectadd(e, addr) }}  ><BiCheckbox/> </a>
-                                                 {/* <Form.Check type="radio"  name="selectaddr"  className="mt-1 pl-2 mr-2"
-                                                
-                                               value={selectAddr}
-                                               onChange={(e)=>setSelectAddr(e.target.value)}
-                                               />
-                                        */}
-                                       </div>
-                                              <Card style={{ width: "500px", height: "150px" }} className="mt-1 p-2 mb-1" >
+                                            <div>
+                                                <a onClick={(e) => { selectadd(e, addr) }}><BiCheckbox /> </a>
+                                            </div>
+                                            <Card style={{ width: "500px", height: "150px" }} className="mt-1 p-2 mb-1" >
 
                                                 <h6>{addr.address} <span>,{addr.states}</span></h6>
                                                 <h6>{addr.city} <span>,{addr.pincode}</span></h6>
@@ -286,13 +299,15 @@ export default function Address() {
 
                                 </Modal>
                             </Card>
-                                    
-                <Button variant="primary"  href='/order' className="mb-2">Confirm Order</Button>
+                            {hide ?
+                                <Button variant="primary" href='/order' className="mb-2">Confirm Order</Button>
+                                : ""
+                            }
                         </Col>
-                
+
                     </Row>
                 </Container>
-               
+
             </Container>
         </>
     )

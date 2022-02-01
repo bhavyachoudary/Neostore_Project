@@ -2,28 +2,10 @@ const Users = require('../models/userSchema')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const jwtSecret = "ddsfftyy677yttfff";
-const nodemailer = require('nodemailer')
-const otpModel = require("../models/otpSchema")
+// const nodemailer = require('nodemailer')
+const otpModel = require("../models/otpSchema");
+const credentials = require('../configFiles/Credentials')
 
-function autenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    console.log(token)
-    if (token == null) {
-        res.json({ "err": 1, "msg": "Token not match" })
-    }
-    else {
-        jwt.verify(token, jwtSecret, (err, data) => {
-            if (err) {
-                res.json({ "err": 1, "msg": "Token incorrect" })
-            }
-            else {
-                console.log("Token Matched")
-                next();
-            }
-        })
-    }
-}
 
 const userCtrl = {
 
@@ -32,7 +14,6 @@ const userCtrl = {
         let lname = req.body.lname;
         let email = req.body.email;
         let password = req.body.password;
-
         let phone = req.body.phone;
         let gender = req.body.gender
 
@@ -40,79 +21,70 @@ const userCtrl = {
         let ins = new Users({ name: name, lname: lname, email: email, password: passwordHash, phone: phone, gender: gender });
         await ins.save((err) => {
             if (err) {
-                res.json({ "err": "Please fill the form" })
-            } else {
-                res.json({ "msg": "Registered successfully" })
+                res.json({ "err": "Please fill the form" }).status(400)
             }
-
+            else {
+                res.status(200).json({ "msg": "Registered successfully"})
+            }
         })
-
     },
 
     login: async (req, res) => {
+        let email = req.body.email;
+        let password = req.body.password;
+        console.log(password)
 
-        try {
-            let email = req.body.email;
-            let password = req.body.password;
-            console.log(password)
+        const user = await Users.findOne({ email: email })
+        console.log(user)
 
-            const user = await Users.findOne({ email })
-            console.log(user)
+        if (user) {
             const isMatch = await bcrypt.compare(password, user.password)
             console.log(isMatch)
-
             if (email === user.email && isMatch) {
                 let payload = {
                     uid: email
                 }
                 const token = jwt.sign(payload, jwtSecret, { expiresIn: 3600009 })
-                res.json({ "msg": "Login Successfull", "token": token })
+                res.status(200).json({ "msg": "Login Successfull", "token": token })
             }
-            else if (!email) {
-                res.json({ err: 'You must enter an email address.' });
-            }
-            else if (!password) {
-                res.json({ err: 'You must enter a password.' });
-            }
-
             else {
-                res.json({ "err": "Please Enter valid credintails" })
+                res.json({ err: 'You must enter a password.' }).status(400);
             }
         }
-        catch (err) {
-            res.json({ "err": 'Please Fill the form.' })
-
+        else {
+            res.json({ "err": "Please Enter valid credintails" }).status(400)
         }
-
 
     },
 
-    sociallogin: (req, res) => {
-        // console.log(req.body)
-        let payload = {
-            name: req.body.name,
-            lname: req.body.lname,
-            email: req.body.email
-        }
-        const token = jwt.sign(payload, jwtSecret, { expiresIn: 360000 })
+    sociallogin: async (req, res) => {
+        console.log(req.body)
+        let name = req.body.name;
+        let lname = req.body.lname;
+        let email = req.body.email;
+        let password = "bhavyasociallogin";
+
+        const passwordHash = await bcrypt.hash(password, 10)
         Users.findOne({ email: req.body.email }).exec((err, data) => {
             if (err) {
-                res.json({ "show": true, "msg": "Somethong Went Wrong" })
+                res.json({ "msg": "Somethong Went Wrong" })
             }
             else if (data == null) {
-                let ins = new Users({ name: req.body.name, lname: req.body.lname, email: req.body.email, password: "bhavyasociallogin", phone: 9999888877, gender: "female" });
+                let ins = new Users({ name: name, lname: lname, email: email, password: passwordHash, phone: "9666777553", gender: "female" });
                 ins.save((err) => {
-                    if (err) { res.json({ "show": true, "msg": "Somethong Went Wrong" }) }
-                    else { res.json({ "show": false, "msg": "Login Success", "token": token }) }
+                    if (err) {
+                        res.json({ "msg": "Somethong Went Wrong" }).status(400);
+                    }
+                    else {
+                        res.status(200).json({ "msg": "Login Success" }).status(400);
+                    }
                 })
             }
-            else if (data.password == "Social Logger") {
-                res.json({ "show": false, "msg": "Login Success", "token": token })
-            }
             else {
-                res.json({ "show": true, "msg": "This Is A Email Registered For Login " })
+                res.status(200).json({ "msg": "This is a Email Registered For Login " })
             }
         })
+
     },
 
     forgotpassword: async (req, res) => {
@@ -122,7 +94,7 @@ const userCtrl = {
             let currentTime = new Date().getTime();
             let diff = data.expiresIn - currentTime;
             if (diff < 0) {
-                res.json({ "msg": "Token Expires" })
+                res.status(200).json({ "msg": "Token Expires" })
             } else {
                 let user = await Users.findOne({ email: req.body.email })
                 user.password = req.body.password;
@@ -131,16 +103,16 @@ const userCtrl = {
                 let hashpassword = await bcrypt.hash(user.password, salt);
                 user.password = hashpassword;
                 user.save();
-                res.json({ "msg": "Password Changed Successfully" })
+                res.status(200).json({ "msg": "Password Changed Successfully" })
             }
         }
         else {
-            res.json({ "msg": "Invalid Otp" })
+            res.json({ "msg": "Invalid Otp" }).status(400);
         }
     },
 
     sendotp: async (req, res) => {
-        console.log(req.body.email);
+        //console.log(req.body.email);
         let data = await Users.findOne({ email: req.body.email });
         if (data) {
             let otpcode = Math.floor((Math.random() * 10000) + 1);
@@ -153,9 +125,9 @@ const userCtrl = {
             let otpResponse = await otpData.save();
             sendmail(otpcode, req.body.email)
             // res.json({"msg":"Email Sent "})
-            res.json({ "msg": "OTP sent to Email", otpcod: otpcode })
+            res.status(200).json({ "msg": "OTP sent to Email", otpcod: otpcode })
         } else {
-            res.json({ "msg": "Email ID doesnt Exist" });
+            res.json({ "msg": "Email ID doesnt Exist" }).status(400);
         }
     },
 
@@ -176,37 +148,42 @@ const userCtrl = {
                 phone: phone, gender: gender
             }
         }, (err) => {
-            if (err) res.json({ err: err });
-            res.json({ msg: "Updated Succesfully" });
+            if (err) res.json({ err: err }).status(400);;
+            res.status(200).json({ msg: "Updated Succesfully" });
         })
     }
+
 }
 
-
-    function sendmail(otpcode,email){
+const nodemailer = require('nodemailer')
+function sendmail(otpcode, email) {
+    console.log(credentials.email)
+    console.log(email)
     let mailTransporter = nodemailer.createTransport({
-        service:"gmail",
-        port:587,
-        secure:false,
-        auth:{
-            user : credentials.email,
-            pass : credentials.password,
+        service: "gmail",
+        auth: {
+            user: credentials.email,
+            pass: credentials.password,
         },
+        tls: {
+            rejectUnAuthorized: true
+        }
     });
-        let mailDetails = {
+    let mailDetails = {
         from: credentials.email,
         to: `${email}`,
         subject: 'OTP for NeoSTORE',
         text: `YOUR OTP IS ${otpcode}`,
     };
-    mailTransporter.sendMail(mailDetails, function(err, data) {
-      if(err) {
-          console.log(err);
-      } else {
-          console.log('Email sent successfully');
-      }
+    mailTransporter.sendMail(mailDetails, function (err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Email sent successfully');
+        }
     });
-    }
+}
+
 
 module.exports = userCtrl
 

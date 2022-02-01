@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Image, Row, Table } from "react-bootstrap";
+import { Button, Col, Container, Image, Row, Table,Card} from "react-bootstrap";
 import { getpdf, sendMail } from '../../config/Myservice';
 import { useLocation } from "react-router";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { BsArrowDown } from "react-icons/bs";
 
 const ref = React.createRef();
 
@@ -11,7 +12,7 @@ export default function Invoicepdf() {
     const [items, setItems] = useState([]);
     const [datas, setDatas] = useState([]);
     const { state } = useLocation();
-
+   
     useEffect(() => {
         console.log(state.id);
         getpdf(state.id)
@@ -20,7 +21,6 @@ export default function Invoicepdf() {
                 console.log(res.data.pdf);
                 console.log(res.data.pdf);
                 console.log(res.data.pdf.Orderno);
-                
                 setDatas(res.data.pdf)
 
             });
@@ -29,71 +29,74 @@ export default function Invoicepdf() {
 
     console.log(datas)
     console.log(datas.Orderno)
-   
+
     const generatePdf = () => {
         const input = document.getElementById("divToPrint");
         console.log(input);
         html2canvas(input, { useCORS: true }).then((canvas) => {
             const pdf = new jsPDF();
-            const img = canvas.toDataURL(
-                "/images/2.jpg"
-            );
+            console.log(pdf)
+            const img = canvas.toDataURL();
+            console.log(img)
             pdf.addImage(img, "JPEG", 0, 0);
-            pdf.save("download.pdf");
+            pdf.save("Neostore.pdf");
         });
     };
     return (
         <div>
-
             <Container fluid className="w-100 d-flex justify-content-center ">
                 <div className="text-center mt-3">
-
-                    <Button variant="success" onClick={() => generatePdf()}>
-                        Click To PDF
-                    </Button>
+                
+                    <Button variant="success" onClick={() => generatePdf()}>Click To PDF<span><BsArrowDown /></span></Button>
                     &nbsp;
-                   
+
                 </div>
             </Container>
             <br />
-            <Container
+            <Card
                 style={{
-                    // border: "1px solid black",
-                    width: "60%",
+                    padding:"30px",
+                    backgroundColor: "white",
+                    maxWidth: "800px",
+                    borderStyle: "10px solid black",
+                    margin: "10px auto",
+                    height: "auto"
+                   
                 }}
-                className="bg-light"
+                className="mb-5"
                 ref={ref}
                 id="divToPrint"
             >
-                <div style={{ backgroundColor: "violet" }}>
+                <div>
                     <Row>
-                        <Col md={9} style={{ backgroundColor: "violet" }}>  
-
-                            <Image
-                                src="/images/neo.jpg"
-                                width="100px"
+                        <Col md={8} >
+                        <h2 className='display-6 mt-2' style={{ color: 'dark' }}>Neo<span style={{ color: 'red' }}>STORE</span></h2>
+                            {/* <Image
+                                src="/images/neos.jpg"
+                                width="200px"
                                 height="100px"
                                 className="p-2"
-                            />
+                            /> */}
 
                         </Col>
-                        <Col md={3} style={{ backgroundColor: "violet" }}> 
-                        <h2 style={{ color: 'white' }}>Neo<span style={{ color: 'red' }}>STORE</span></h2>
-                        {datas.map((value) => {
-                            return (
-                                  <span>OrderNo<h4><i> {value.Orderno}</i></h4></span>
-                                               
-                        )
-                        }
-                        )}
+                        <Col md={4} className='display-6 mt-2' >
+                      
+                            {datas.map((value) => {
+                                return (
+                                    <h4 className="text-dark"><span >OrderNo:&nbsp;</span>{value.Orderno}</h4>
+
+                                )
+                            }
+                            )}
 
                         </Col>
                     </Row>
                 </div>
+                <hr/>
                 <div>
 
                     <Row className="pt-3 mb-3">
-                        <Col md={9} >
+                        <Col md={10} >
                             <p>
                                 <span
                                     style={{
@@ -131,8 +134,8 @@ export default function Invoicepdf() {
                                                 {value.email}
 
                                                 <p>{value.selectaddr.address},
-                                                  {value.selectaddr.pincode}<br />
-                                                    {value.selectaddr.state} ,
+                                                    {value.selectaddr.pincode}<br />
+                                                    {value.selectaddr.state} 
                                                     {value.selectaddr.country}
                                                 </p>
                                             </span>
@@ -141,7 +144,8 @@ export default function Invoicepdf() {
                                 })}
                             </p>
                         </Col>
-                        <Col md={3}>
+
+                        <Col md={2}>
                             {datas.map((value, index) => {
                                 return (
                                     <div>
@@ -158,11 +162,11 @@ export default function Invoicepdf() {
                                             <span
                                                 style={{
                                                     fontWeight: "bold",
-                                                    color: "red",
+                                                    color: "green",
                                                 }}
                                             >
                                                 {/* {value.status} */}
-                                                paid
+                                                Paid
                                             </span>
                                             <br />
                                         </p>
@@ -179,7 +183,7 @@ export default function Invoicepdf() {
                                             <span
                                                 style={{ fontWeight: "bold" }}
                                             >
-                                                {value.date}
+                                                {value.date.substring(0, 10)}
                                             </span>
                                             <br />
                                         </p>
@@ -192,11 +196,11 @@ export default function Invoicepdf() {
                                             >
                                                 DUE DATE
                                             </span>
-                                            <br />
+                                            <br/>
                                             <span
                                                 style={{ fontWeight: "bold" }}
                                             >
-                                                {/* {value.dueDate} */}
+                                             2022-02-10
                                             </span>
                                             <br />
                                         </p>
@@ -224,15 +228,12 @@ export default function Invoicepdf() {
                     </Row>
                 </div>
 
-                <Col lg={12}>
-
-                    <Container>
-                        {datas.map((value, index) => {
+                     {datas.map((value, index) => {
                             return (
                                 <p key={index} >
                                     {/* <p><span className='text-danger'>DATE</span>:{value.date}</p> */}
                                     <div>
-                                        <Table striped bordered hover size="sm">
+                                        <Table  bordered hover size="sm" brd>
                                             <thead>
                                                 <tr>
                                                     <th>Sr.No</th>
@@ -248,9 +249,8 @@ export default function Invoicepdf() {
                                                     return (
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td> <img src={val.product_image} height="90px" width="120px" /></td>
+                                                            <td><img src={val.product_image} height="90px" width="120px" /></td>
                                                             <td>{val.product_name}</td>
-
                                                             <td>{val.quantity}</td>
                                                             <td> {val.product_cost}</td>
 
@@ -264,15 +264,15 @@ export default function Invoicepdf() {
                             );
                         })
                         }
-                    </Container>
-                </Col>
+                
+                
                 <div>
                     <span style={{ fontWeight: "bold" }}>Payment Terms:</span>
                     <br />
                     Please pay the amount within 30 days.
                 </div>
                 <br />
-            </Container>
+            </Card>
         </div>
     )
 }

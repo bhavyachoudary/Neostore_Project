@@ -1,7 +1,7 @@
-const mongoose=require('mongoose')
+const mongoose = require('mongoose')
 
 const db = "mongodb://localhost:27017/neoStore";
- async function connectDB() {
+async function connectDB() {
     try {
         await mongoose.connect(db, { useNewUrlParser: true });
         console.log("Mongoose connected")
@@ -10,4 +10,4 @@ const db = "mongodb://localhost:27017/neoStore";
         console.log(err.message)
     }
 }
-module.exports=connectDB;
+module.exports = connectDB;

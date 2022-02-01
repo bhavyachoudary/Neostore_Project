@@ -28,7 +28,7 @@ export default function AllOrders() {
 
     return (
         <>
-         
+
             <Container className="pt-3 pb-3">
                 <Row>
                     <Col lg={10}>
@@ -37,7 +37,7 @@ export default function AllOrders() {
                             {temp.map((value, index) => {
                                 return (
                                     <p key={index} >
-                                        <p><span className='text-danger'>DATE&nbsp;</span>:<b>&nbsp;{value.date.substring(0,10)}</b></p>
+                                        <p><span className='text-danger'>DATE&nbsp;</span>:<b>&nbsp;{value.date.substring(0, 10)}</b></p>
                                         <div>
                                             <Table striped bordered hover size="sm">
                                                 <thead>

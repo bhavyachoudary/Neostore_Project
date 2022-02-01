@@ -6,12 +6,14 @@ import { Container, Card, Button, DropdownButton, Dropdown, Row, Col, Nav } from
 import ReactPaginate from 'react-paginate';
 import { BsArrowUp, BsArrowDown, BsStarFill } from "react-icons/bs";
 import { BiRupee } from "react-icons/bi";
-import ReactStars from 'react-rating-stars-component';
-import Headers from './Headers';
+import ReactStars from "react-rating-stars-component";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 export default function Products() {
     let email = sessionStorage.getItem('user')
-    
+
     const [products, setProducts] = useState([]);
     const [filter, setFilter] = useState('')
     const [categories, setCategories] = useState([]);
@@ -23,6 +25,10 @@ export default function Products() {
     const productsPerPage = 6;
     const pageVisited = pagenumber * productsPerPage
     const pageCount = Math.ceil(products.length / productsPerPage)
+    
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     console.log(rating)
     useEffect(() => {
         getProducts()
@@ -93,14 +99,17 @@ export default function Products() {
                 let ind = arr.findIndex(x => x.id === id);
                 arr[ind] = { id: id, quantity: arr[ind].quantity + 1, item: item, email: email };
                 localStorage.setItem('mycart', JSON.stringify(arr));
-                alert("Product quantity is increased");
+                warning("Product quantity is increased");
             }
             else {
                 arr.push({ id: id, quantity: 1, item: item, email: email });
                 localStorage.setItem('mycart', JSON.stringify(arr));
                 // counter()
-                alert("Product Added to Cart")
-                window.location.reload(false)
+                success("Product Added to Cart")
+                setTimeout(() => {
+                    window.location.reload(false)
+                }, 2000);
+               
             }
 
         }
@@ -109,8 +118,10 @@ export default function Products() {
             arr.push({ id: id, quantity: 1, item: item, email: email });
             localStorage.setItem('mycart', JSON.stringify(arr));
             // counter()
-            alert("Product Added to Cart")
-            window.location.reload()
+            success("Product Added to Cart")
+            setTimeout(() => {
+                window.location.reload(false)
+            }, 2000);
 
         }
     }
@@ -170,9 +181,6 @@ export default function Products() {
         });
         setProducts(sort_products);
     }
-
-
-
 
     const searchProducts = (event) => {
         setFilter(event.target.value)

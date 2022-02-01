@@ -1,19 +1,24 @@
 const jwt = require('jsonwebtoken')
+const jwtSecret = "abcdefghijklmnopqrstuvwxyz";
 
-const auth = (req, res, next) =>{
-    try {
-        const token = req.header("Authorization")
-        if(!token) return res.status(400).json({msg: "Invalid Authentication"})
-
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
-            if(err) return res.status(400).json({msg: "Invalid Authentication"})
-
-            req.user = user
-            next()
+const autenticateToken = (req, res, next) =>{
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log(token)
+    if (token == null) {
+        res.json({ "err": 1, "msg": "Token not match" })
+    }
+    else {
+        jwt.verify(token, jwtSecret, (err, data) => {
+            if (err) {
+                res.json({ "err": 1, "msg": "Token incorrect" })
+            }
+            else {
+                console.log("Token Matched")
+                next();
+            }
         })
-    } catch (err) {
-        return res.status(500).json({msg: err.message})
     }
 }
 
-module.exports = auth
+module.exports=autenticateToken;

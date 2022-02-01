@@ -4,16 +4,22 @@ import { useNavigate } from 'react-router';
 import { loginUser, socialloggin } from '../config/Myservice';
 import * as Icon from 'react-bootstrap-icons';
 import SocialButton from '../components/SocialLogin'
-import Headers from './Headers';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
 export default function Login() {
     let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
-    let [social, setSocial] = useState('')
+    //let [social, setSocial] = useState('')
     const [state, setstate] = useState({ userData: [] })
     const navigate = useNavigate();
+
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
 
     useEffect(() => {
         if (sessionStorage.getItem('_token') != undefined) {
@@ -22,51 +28,56 @@ export default function Login() {
 
     }, [])
 
-    const login = () => {
+    const login = (event) => {
+        event.preventDefault()
         let data = { email: email, password: password };
         loginUser(data)
             .then(res => {
                 if (res.data.err) {
-                    alert(res.data.err)
+                    failure(res.data.err)
                 }
                 else {
-                    alert(res.data.msg)
+                    success(res.data.msg)
                     console.log(res.data)
                     console.log(email)
                     sessionStorage.setItem("user", email);
                     sessionStorage.setItem("_token", res.data.token)
                     navigate('/')
                 }
+
             });
     }
-
-    const handleSocialLogin = async (user) => {
-        setSocial({ msg: "", show: false });
-        let email = user._profile.email
-        if (user._profile.email == undefined) {
-            email = user._profile.id
-        }
-        socialloggin({ email: email, name: user._profile.firstName, lname: user._profile.lastName }).then(res => {
-            console.log(res.data)
-            if (!res.data.show) {
+    const handleSocialLogin = (user) => {
+        console.log(user);
+        let email=user._profile.email
+        let data = {
+            name: user._profile.firstName,
+            lname: user._profile.lastName,
+            email: email,
+          
+        };
+        socialloggin(data).then((res) => {
+            if (res.data.err) {
+                failure(res.data.err);
+            } else {
+                success(res.data.msg);
+                navigate("/");
                 sessionStorage.setItem("_token", res.data.token);
                 sessionStorage.setItem("user", email);
-                navigate('/');
-                alert(res.data.msg);
             }
-            if (res.data.show) {
-                setSocial(res.data);
-            }
-        })
+        });
+       
+       
     };
+   
     const handleSocialLoginFailure = (err) => {
-        // console.error(err);
-        setSocial({ msg: "Something went Wrong Refresh And Try Again", show: true });
+        console.error(err);
+       
     };
 
     return (
         <>
-         
+
             <Container className="d-flex justify-content-center mt-5 mb-5">
 
                 <Container className="conatiner mt-3 mb-5">
@@ -95,29 +106,18 @@ export default function Login() {
                                 <i className="mr-3"><Icon.Facebook size={25} /></i> Login with Facebook
                             </SocialButton>
 
-                            {/* <SocialButton
-                                className="btn btn-info col-lg-8 p-2 mb-3"
 
-                                provider="facebook"
-                                appId="564806257914027"
-                                onLoginSuccess={handleSocialLogin}
-                                onLoginFailure={handleSocialLoginFailure}
-                            >
-                                <i className="mr-3"></i> Login with Twitter
-                            </SocialButton> */}
 
                         </Col>
 
                         <div class="line">
                         </div>
                         <Col lg="6">
-                            <Form className=" bg-light p-2">
+                            <Form className=" bg-light p-2" onSubmit={login}>
                                 <h2 className="pb-1 text-center">Login to NeoStore </h2>
 
                                 <Form.Group className="mb-3 mt-3">
-                                    {/* <Form.Label column sm="2">
-                        Email
-                    </Form.Label> */}
+
                                     <Col sm="10">
                                         <Form.Control type="text" placeholder="Enter Email" name="email" onChange={(e) => { setEmail(e.target.value) }} />
                                         {email != '' && !regForEmail.test(email) && <span className="text-danger">Enter email  correctly</span>}
@@ -132,7 +132,7 @@ export default function Login() {
                                     </Col>
                                 </Form.Group>
 
-                                <Button variant="success" onClick={login}>Login</Button>
+                                <Button variant="success" type="submit">Login</Button>
 
                             </Form>
                         </Col>

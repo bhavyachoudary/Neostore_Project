@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
-import { registerUser } from '../config/Myservice';
+import { registerUser,socialloggin } from '../config/Myservice';
 import { useNavigate } from 'react-router';
 import * as Icon from 'react-bootstrap-icons';
-import axios from 'axios';
-import Headers from './Headers';
+import SocialButton from '../components/SocialLogin'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
@@ -18,7 +20,9 @@ export default function Registration() {
     let [gender, setGender] = useState('');
     const navigate = useNavigate();
 
-
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
 
     const register = () => {
         let data = { name: name, lname: lname, phone: phone, email: email, password: password, confirmpassword: confirmpassword, gender: gender };
@@ -26,23 +30,77 @@ export default function Registration() {
         registerUser(data)
             .then(res => {
                 if (res.data.err) {
-                    alert(res.data.err)
+                    console.log(res.data.err)
+                    failure(res.data.err)
                 }
                 else {
-                    alert(res.data.msg)
+                    success(res.data.msg)
+                    console.log(res.data.msg)
                     navigate('/login')
                 }
             });
-
     }
+
+    const handleSocialLogin = (user) => {
+        console.log(user);
+        let email = user._profile.email
+        let data = {
+            name: user._profile.firstName,
+            lname: user._profile.lastName,
+            email: email,
+
+        };
+        socialloggin(data).then((res) => {
+            if (res.data.err) {
+                failure(res.data.err);
+            } else {
+                success(res.data.msg);
+                navigate("/login");
+                sessionStorage.setItem("_token", res.data.token);
+                sessionStorage.setItem("user", email);
+            }
+        });
+
+
+    };
+
+    const handleSocialLoginFailure = (err) => {
+        console.error(err);
+
+    };
+
 
     return (
         <>
-          
-            <Container className="mt-4 ">
-                <div class="row d-flex justify-content-center col-sm-12">
-                    <div class=" col-md-3 col-sm-12 mb-3 mr-20"> <a href="#" className="btn btn-primary facebook"> <i className="mr-3 "><Icon.Facebook size={25} /></i><span>Login with Facebook</span>  </a> </div>
-                    <div class="col-md-3 col-sm-12 "> <a href="#" className="btn btn-danger google-plus"> <i className="mr-3"><Icon.Google size={25} /></i>Login with Google </a> </div>
+
+            <Container className="mt-4">
+                <div className="d-flex justify-content-center">
+                <div className="row col-lg-8 ">
+                    <div className=" col-md-6 col-sm-10 mb-3 ">
+                        <SocialButton
+                            className="btn btn-danger col-lg-8 p-2 mb-3"
+                            provider="google"
+                            appId="541294076156-665cub3gp8l3lvnhhtcp6eqtv6mrb080.apps.googleusercontent.com"
+                            onLoginSuccess={handleSocialLogin}
+                            onLoginFailure={handleSocialLoginFailure}
+                        >
+                            <i className="mr-3"><Icon.Google size={25} /></i> Login with Gmail
+                        </SocialButton>
+
+                    </div>
+                    <div class="col-md-6 col-sm-10 "> 
+                    <SocialButton
+                                className="btn btn-primary col-lg-8 p-2 mb-3"
+
+                                provider="facebook"
+                                appId="564806257914027"
+                                onLoginSuccess={handleSocialLogin}
+                                onLoginFailure={handleSocialLoginFailure}
+                            >
+                                <i className="mr-3"><Icon.Facebook size={25} /></i> Login with Facebook
+                            </SocialButton>
+                     </div>
+                </div>
                 </div>
                 <Container className="mt-3 w-75 bg-light p-4">
                     <h1 className="text-center text-dark pb-3">Register to NeoStore</h1>
