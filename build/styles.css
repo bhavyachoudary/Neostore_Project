@@ -1,0 +1,51 @@
+
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color:black;
+    display: block;
+  }
+  
+  .sidenav a:hover {
+    color:darkgreen;
+  }
+  /* .cardheig{
+   min-height:350px
+  } */
+  .paginationBttns{
+    width: 80%;
+    height: 40px;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+  }
+  .paginationBttns a {
+    padding: 10px;
+   
+    margin: 8px;
+    
+    border-radius:  2px;
+    border: 1px solid #2b2eff;
+    color: #2b2eff;
+    cursor: pointer;
+  }
+  .paginationBttns a:hover{
+    color: white;
+    text-decoration: none;
+    background-color: #2b2eff;
+  }
+  .paginationActive a{
+    color: white;
+    background-color: #2b2eff;
+  }
+  .pic {
+    border-radius: 50%;
+    border-color: darkgray;
+    border-width: 10px;
+  }
+  .brd{
+    border:2px black solid;
+  }
+  
+    

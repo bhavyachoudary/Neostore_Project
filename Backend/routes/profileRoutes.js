@@ -6,7 +6,8 @@ const pofileCtrl = require('../controllers/profileControllers')
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'E:/neoProject/NeoStore/public/images')
+        cb(null, 'E:/Mypractice/NeoStore/public/images')
+
 
     },
     filename: (req, file, cb) => {
